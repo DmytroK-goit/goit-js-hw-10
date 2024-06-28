@@ -1,9 +1,16 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
 const elementInput = document.querySelector('#datetime-picker');
 const butStart = document.querySelector('[data-start]');
+const daysElem = document.querySelector('[data-days]');
+const hoursElem = document.querySelector('[data-hours]');
+const minutesElem = document.querySelector('[data-minutes]');
+const secondsElem = document.querySelector('[data-seconds]');
 
+butStart.disabled = true;
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -12,7 +19,12 @@ const options = {
   onClose(selectedDates) {
     console.log(selectedDates[0]);
     if (selectedDates[0] < new Date()) {
-      alert('Please choose a date in the future');
+      iziToast.show({
+        position: 'topRight',
+        backgroundColor: 'red',
+        messageColor: 'white',
+        message: 'Please choose a date in the future',
+      });
       butStart.disabled = true; // Деактивуємо кнопку Start
     } else {
       butStart.disabled = false; // Активуємо кнопку Start
@@ -24,6 +36,32 @@ const options = {
 };
 
 flatpickr(elementInput, options);
+
+function startTimer(selectedDate) {
+  const endDate = new Date(selectedDate).getTime();
+  let timerInterval;
+
+  function updateTimer() {
+    const now = new Date().getTime();
+    const remainingTime = endDate - now;
+
+    if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      console.log('Таймер завершено');
+      butStart.disabled = false;
+      elementInput.disabled = false;
+      return;
+    }
+    const time = convertMs(remainingTime);
+    daysElem.textContent = String(time.days).padStart(2, '0');
+    hoursElem.textContent = String(time.hours).padStart(2, '0');
+    minutesElem.textContent = String(time.minutes).padStart(2, '0');
+    secondsElem.textContent = String(time.seconds).padStart(2, '0');
+  }
+  timerInterval = setInterval(updateTimer, 1000);
+  butStart.disabled = true;
+  elementInput.disabled = true;
+}
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -43,7 +81,3 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
-
-console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}

@@ -6,13 +6,15 @@ const makePromise = (stateValue, delayValue) => {
         setTimeout(() => {
             if (stateValue === "fulfilled") {
                 iziToast.show({
-                    backgroundColor: 'rgb(44, 201, 13)',
+                    backgroundColor: 'rgb(46, 243, 7)',
+                    messageColor: 'white',
                     message: `✅ Fulfilled promise in ${delayValue} ms`
                 });
                 resolve();
             } else {
                 iziToast.show({
-                    backgroundColor: 'red',
+                    backgroundColor: 'rgb(240, 116, 133)',
+                    messageColor: 'white',
                     message: `❌ Rejected promise in ${delayValue} ms`
                 });
                 reject();
@@ -30,8 +32,6 @@ const delayValue = form.querySelector('input[name="delay"]').value;
 const stateValue = form.querySelector('input[name="state"]:checked').value;
 
 makePromise(stateValue, delayValue);
-
-
  });
 
  

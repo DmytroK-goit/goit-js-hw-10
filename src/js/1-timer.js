@@ -50,6 +50,12 @@ function startTimer(selectedDate) {
       console.log('Таймер завершено');
       butStart.disabled = false;
       elementInput.disabled = false;
+      iziToast.show({
+        position: 'topRight',
+        backgroundColor: 'green',
+        messageColor: 'white',
+        message: 'Таймер завершено',
+      });
       return;
     }
     const time = convertMs(remainingTime);
